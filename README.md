@@ -1,6 +1,6 @@
-# skills_challenge
+# grill-and-challenge
 
-Claude Code skills for adversarial plan refinement.
+Skills for adversarial plan refinement — first the human gets grilled, then the plan does.
 
 | Skill | Origin |
 |---|---|
