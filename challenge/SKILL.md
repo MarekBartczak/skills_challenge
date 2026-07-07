@@ -5,27 +5,47 @@ description: Use when a plan, spec, design doc, or ADR is written and needs adve
 
 # Challenge
 
-Adversarial review loop: Codex CLI reviews an artifact file, you apply fixes, repeat until AGREE or user arbitration. You are a debate side, NOT the judge — the user arbitrates disputes.
+Adversarial review loop: a second AI CLI reviews an artifact file, you apply fixes, repeat until AGREE or user arbitration. You are a debate side, NOT the judge — the user arbitrates disputes.
+
+## Picking the reviewer
+
+The reviewer is always **the other model** — never yourself:
+
+| You are running in | Reviewer command |
+|---|---|
+| Claude Code | `codex` |
+| Codex | `claude` |
+
+Check the reviewer CLI exists (`command -v codex` / `command -v claude`) before starting.
 
 ## Prerequisites
 
 - Artifact must be a file on disk. If the plan exists only in conversation, write it to a `.md` file first.
 - **If the artifact is fuzzy** — undecided approaches, vague terminology, open questions, no clear decisions — **run the `grill-with-docs` skill first** to interrogate the user, then return here.
-- `codex` CLI available (`command -v codex`).
 
 ## The Loop (max 4 rounds, then user gate)
 
 1. Ensure the artifact ends with a `## Review history` section (create on first round).
-2. Run the reviewer — fresh session each round; debate memory lives in the artifact's Review history, not in CLI session state:
+2. Run the reviewer — fresh session each round; debate memory lives in the artifact's Review history, not in CLI session state.
+
+Codex as reviewer (you are in Claude Code):
 
 ```bash
 codex exec --skip-git-repo-check --sandbox read-only \
-  --output-last-message "$SCRATCHPAD/codex-round-N.md" \
+  --output-last-message "$TMPDIR/challenge-round-N.md" \
   "<reviewer prompt>" >/dev/null 2>&1
-cat "$SCRATCHPAD/codex-round-N.md"
+cat "$TMPDIR/challenge-round-N.md"
 ```
 
 Never filter codex stdout with `head`/`awk`/`tail` to find the verdict — the stream is noisy and you will lose it. Always read the `--output-last-message` file.
+
+Claude as reviewer (you are in Codex):
+
+```bash
+claude -p "<reviewer prompt>"
+```
+
+`claude -p` prints only the final answer on stdout — read it directly. Read-only tools (Read/Grep/Glob) work in `-p` mode by default; do not grant write permissions to the reviewer.
 
 3. The reviewer prompt must demand (template below):
    - remarks tagged `[MUST]`/`[NICE]`, each with a stable ID (`#1`, `#2`, …) continuing numbering across rounds,
