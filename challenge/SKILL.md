@@ -54,6 +54,7 @@ claude -p "<reviewer prompt>"
 4. Apply every accepted `[MUST]` to the artifact. Rejecting a remark requires written justification in Review history — silent drops forbidden.
 5. Append to Review history: round, verdict, remark IDs accepted/rejected with reasons.
 6. `AGREE` → present result + open `[NICE]` backlog to user. `CONTINUE` → next round. Round 4 without AGREE → stop; show user the open disputes and let them decide.
+7. Fixes applied in the final round are **unverified** — say so explicitly at the user gate and offer a +1 verification round.
 
 ## Anti-bias rules
 
