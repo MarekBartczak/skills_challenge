@@ -22,7 +22,7 @@ Check the reviewer CLI exists (`command -v codex` / `command -v claude`) before 
 
 Planning and challenging run on the **highest available models on both sides** — plan quality gates everything built on it, and a weak critic rubber-stamps. Task *execution* from the finished plan may use cheaper models; the critic/reviewer role never goes below top tier.
 
-Currently: `codex exec -m gpt-5.5 …` / `claude -p --model opus …` (Opus 4.8). When newer top models ship, use those.
+Use the strongest reasoning model available in the local CLI — check what is current rather than assuming (examples as of 2026-07: `codex exec -m gpt-5.5 …`, `claude -p --model opus …`).
 
 ## Prerequisites
 
